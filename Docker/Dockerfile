@@ -5,7 +5,7 @@ RUN apk add --update mysql-client bash openssl openssh-client && rm -rf /var/cac
 COPY dump.sh /usr/local/bin/dump
 COPY import.sh /usr/local/bin/import
 
-WORKDIR /dump
+VOLUME ["/dump"]
 
 CMD ["/usr/local/bin/dump"]
 
