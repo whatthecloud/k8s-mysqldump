@@ -36,7 +36,7 @@ build_output() {
 		db_dump | cipher_command | output_command
 	else
 		db_dump | output_command
-
+	fi
 }
 
 if [[ -z "$DB_USER" ]]; then
@@ -65,15 +65,15 @@ if [[ -z "$ALL_DATABASES" ]]; then
 	build_output
 else
 	databases=`mysql --user="${DB_USER}" --password="${DB_PASS}" --host="${DB_HOST}" -e "SHOW DATABASES;" | tr -d "| " | grep -v Database`
-for db in $databases; do
-    if [[ "$db" != "information_schema" ]] && [[ "$db" != "performance_schema" ]] && [[ "$db" != "mysql" ]] && [[ "$db" != _* ]] && [[ ",$IGNORE_DATABASE," =~ ",$db," ]]; then
-        echo "Dumping database: $db"
-		if [[ -z "$DB_PORT" ]]; then
-        	db_dump() { "mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} --databases $db" }
-		else
-			db_dump() { "mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} --port=${DB_PORT} --databases $db" }
+	for db in $databases; do
+		if [[ "$db" != "information_schema" ]] && [[ "$db" != "performance_schema" ]] && [[ "$db" != "mysql" ]] && [[ "$db" != _* ]] && [[ ",$IGNORE_DATABASE," =~ ",$db," ]]; then
+			echo "Dumping database: $db"
+			if [[ -z "$DB_PORT" ]]; then
+				db_dump() { "mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} --databases $db" }
+			else
+				db_dump() { "mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} --port=${DB_PORT} --databases $db" }
+			fi
+			build_output
 		fi
-		build_output
-    fi
-done
+	done
 fi
