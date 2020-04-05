@@ -58,7 +58,6 @@ if [[ -z "$ALL_DATABASES" ]]; then
 	fi
 	if [[ -z "$DB_PORT" ]]; then
 		db_dump() { "mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} $@ ${DB_NAME}" }
-
 	else
 		db_dump() { "mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} --port=${DB_PORT} $@ ${DB_NAME}" }
 	fi
