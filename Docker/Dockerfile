@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-RUN apk add --update mysql-client bash openssl openssh-client && rm -rf /var/cache/apk/*
+RUN apk add --no-cache mysql-client bash openssl openssh-client
 
 COPY dump.sh /usr/local/bin/dump
 COPY import.sh /usr/local/bin/import

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 DB_USER=${DB_USER:-${MYSQL_ENV_DB_USER}}
 DB_PASS=${DB_PASS:-${MYSQL_ENV_DB_PASS}}
