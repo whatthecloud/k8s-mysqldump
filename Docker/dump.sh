@@ -1,15 +1,5 @@
 #!/bin/bash
 
-export DB_USER='a'
-export DB_PASS='b'
-export DB_HOST='d'
-export DB_PORT='3306'
-export CIPHER_ALGORITHM="aes256"
-export CIPHER_PASSWORD="abcd"
-export OUTPUT_PATH="/home/joshua/exports"
-export TIME_ZONE="America/Chicago"
-export ALL_DATABASES="true"
-
 DB_USER=${DB_USER:-${MYSQL_ENV_DB_USER}}
 DB_PASS=${DB_PASS:-${MYSQL_ENV_DB_PASS}}
 DB_NAME=${DB_NAME:-${MYSQL_ENV_DB_NAME}}
