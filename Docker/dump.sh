@@ -1,5 +1,15 @@
 #!/bin/bash
 
+export DB_USER='a'
+export DB_PASS='b'
+export DB_HOST='d'
+export DB_PORT='3306'
+export CIPHER_ALGORITHM="aes256"
+export CIPHER_PASSWORD="abcd"
+export OUTPUT_PATH="/home/joshua/exports"
+export TIME_ZONE="America/Chicago"
+export ALL_DATABASES="true"
+
 DB_USER=${DB_USER:-${MYSQL_ENV_DB_USER}}
 DB_PASS=${DB_PASS:-${MYSQL_ENV_DB_PASS}}
 DB_NAME=${DB_NAME:-${MYSQL_ENV_DB_NAME}}
@@ -57,9 +67,13 @@ if [[ -z "$ALL_DATABASES" ]]; then
 		exit 1
 	fi
 	if [[ -z "$DB_PORT" ]]; then
-		db_dump() { "mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} $@ ${DB_NAME}" }
+		db_dump() {
+			"mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} $@ ${DB_NAME}"
+			}
 	else
-		db_dump() { "mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} --port=${DB_PORT} $@ ${DB_NAME}" }
+		db_dump() {
+			"mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} --port=${DB_PORT} $@ ${DB_NAME}"
+			}
 	fi
 	build_output
 else
@@ -68,9 +82,13 @@ else
 		if [[ "$db" != "information_schema" ]] && [[ "$db" != "performance_schema" ]] && [[ "$db" != "mysql" ]] && [[ "$db" != _* ]] && [[ ",$IGNORE_DATABASE," =~ ",$db," ]]; then
 			echo "Dumping database: $db"
 			if [[ -z "$DB_PORT" ]]; then
-				db_dump() { "mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} --databases $db" }
+				db_dump() {
+					"mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} --databases $db" 
+					}
 			else
-				db_dump() { "mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} --port=${DB_PORT} --databases $db" }
+				db_dump() {
+					"mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} --port=${DB_PORT} --databases $db"
+					}
 			fi
 			build_output
 		fi
