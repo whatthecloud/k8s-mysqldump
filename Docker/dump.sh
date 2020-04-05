@@ -12,13 +12,13 @@ TIME_ZONE=${TIME_ZONE}
 ALL_DATABASES=${ALL_DATABASES}
 IGNORE_DATABASE=${IGNORE_DATABASE}
 
-output_command() {
-  local timestamp="\`date +%Y%m%d%H%M\`"
-  local output_file="$DATABASE_NAME-$timestamp.dump"
-  local default_output_path="/dump"
-  OUTPUT_PATH=${OUTPUT_PATH:-$default_output_path}
-  OUTPUT_FILE="${OUTPUT_PATH}/$output_file"
-  cat - > ${OUTPUT_FILE}
+output_gen() {
+  TIMESTAMP="\`date +%Y%m%d%H%M\`"
+  OUTPUT_FILE="$DATABASE_NAME-$TIMESTAMP.dump"
+  DEFAULT_OUTPUTPATH="/dump"
+  OUTPUT_PATH=${OUTPUT_PATH:-$DEFAULT_OUTPUTPATH}
+  OUTPUT_FULL="${OUTPUT_PATH}/$OUTPUT_FILE"
+  return "$OUTPUT_FULL"
 }
 
 cipher_command() {
@@ -33,9 +33,11 @@ cipher_command() {
 
 build_output() {
 	if [[ -z "$CIPHER_ALGORITHM" ]]; then
-		db_dump | cipher_command | output_command
+		db_dump | cipher_command | cat - > $(output_gen)
+		echo "Completed: Exported $OUTPUT_PATH/$OUTPUT_FILE"
 	else
-		db_dump | output_command
+		db_dump | output_command | cat - > $(output_gen)
+		echo "Completed: Exported $OUTPUT_PATH/$OUTPUT_FILE"
 	fi
 }
 
