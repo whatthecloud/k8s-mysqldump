@@ -27,13 +27,13 @@ cipher_command() {
       echo "The value of CIPHER_PASSWORD must be set if enc"
       exit
     fi
-    openssl $CIPHER_ALGORITHM -k $CIPHER_PASSWORD
+    openssl $CIPHER_ALGORITHM -salt -pbkdf2 -k $CIPHER_PASSWORD
   fi
 }
 
 build_output() {
 	if [[ -z "$CIPHER_ALGORITHM" ]]; then
-		db_dump | cipher_command | cat - > $(output_gen)
+		db_dump | cat - > $(output_gen)
 		echo "Completed: Exported $OUTPUT_PATH/$OUTPUT_FILE"
 	else
 		db_dump | output_command | cat - > $(output_gen)
@@ -62,11 +62,14 @@ if [[ -z "$ALL_DATABASES" ]]; then
 		db_dump() {
 			"mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} $@ ${DB_NAME}"
 			}
+		echo "Created DB_DUMP command for ${DB_NAME}"
 	else
 		db_dump() {
 			"mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} --port=${DB_PORT} $@ ${DB_NAME}"
 			}
+		echo "Created DB_DUMP command for ${DB_NAME}"
 	fi
+	echo "Calling build command"
 	build_output
 else
 	databases=`mysql --user="${DB_USER}" --password="${DB_PASS}" --host="${DB_HOST}" -e "SHOW DATABASES;" | tr -d "| " | grep -v Database`
@@ -77,11 +80,14 @@ else
 				db_dump() {
 					"mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} --databases $db" 
 					}
+				echo "Created DB_DUMP command for $db"
 			else
 				db_dump() {
 					"mysqldump --user=${DB_USER} --password=${DB_PASS} --host=${DB_HOST} --port=${DB_PORT} --databases $db"
 					}
+				echo "Created DB_DUMP command for $db"
 			fi
+			echo "Calling build command"
 			build_output
 		fi
 	done
